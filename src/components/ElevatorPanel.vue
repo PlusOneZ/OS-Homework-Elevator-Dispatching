@@ -30,7 +30,7 @@
               class="w-10"
           >
             <button
-                class="rounded border-2 border-solid border-cyan-300 h-7 w-8"
+                class="rounded border-2 border-solid border-blue-300 h-7 w-8"
                 @click="floorSelected(floorNum - i + 1)"
                 :class="{'bg-blue-400': lighten[floorNum - i + 1]}"
             >
