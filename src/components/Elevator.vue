@@ -39,6 +39,9 @@ import '@/assets/css/tailwind.css'
 import ElevatorPanel from "@/components/ElevatorPanel";
 import FloorPanel from "@/components/FloorPanel";
 
+let UP = 1
+let DOWN = 2
+
 export default {
   name: "Elevator",
   components: {ElevatorPanel, FloorPanel},
@@ -52,13 +55,13 @@ export default {
 
   methods: {
     floorUpRequest: function (floor) {
-      var i = Math.ceil(Math.random() * 5)
+      let i = this.findElevatorToDeal(floor, UP)
       console.log("Requesting to ", i, " elevator")
       this.$refs.elevatorList[i].requestUp(floor)
     },
 
     floorDownRequest: function (floor) {
-      var i = Math.ceil(Math.random() * 5)
+      let i = this.findElevatorToDeal(floor, DOWN)
       console.log("Requesting to ", i, " elevator")
       this.$refs.elevatorList[i].requestDown(floor)
     },
@@ -69,6 +72,75 @@ export default {
 
     floorDownRequestDealt: function (floor) {
       this.$refs.floorPanels[floor-1].downRequestHandled()
+    },
+
+    findElevatorToDeal: function (floor, direction) {
+      var dispatchedTo = -1
+      var distance = this.floorNum + 1
+      var inTrailDistance = this.floorNum + 1
+      for (var i = 0; i < this.elevNum; i++) {
+        let elevator = this.$refs.elevatorList[i]
+        if (direction === UP) {
+          if (elevator.goingUp || elevator.currentFloor < floor) {
+            if (elevator.maxInQueue > floor) {
+              if (floor - elevator.currentFloor < inTrailDistance) {
+                inTrailDistance = floor - elevator.currentFloor
+                dispatchedTo = i
+              }
+            } else {
+              if (inTrailDistance === this.floorNum + 1 && floor - elevator.currentFloor < distance) {
+                distance = elevator.currentFloor
+                dispatchedTo = i
+              }
+            }
+          }
+          if (dispatchedTo < 0) {
+            if (elevator.idle) {
+              dispatchedTo = i
+            }
+          }
+        } else {
+          if (elevator.goingDown || elevator.currentFloor > floor) {
+            if (elevator.minInQueue < floor) {
+              if (elevator.currentFloor - floor < inTrailDistance) {
+                inTrailDistance = elevator.currentFloor - floor
+                dispatchedTo = i
+              }
+            } else {
+              if (inTrailDistance === this.floorNum + 1 && elevator.currentFloor - floor < distance) {
+                distance = elevator.currentFloor
+                dispatchedTo = i
+              }
+            }
+          }
+          if (dispatchedTo < 0) {
+            if (elevator.idle) {
+              dispatchedTo = i
+            }
+          }
+        }
+      }
+
+      if (dispatchedTo < 0) {
+        var min = this.floorNum + 1
+        var max = -1
+        for (var j = 0; i < this.elevNum; j++) {
+          let elevator = this.$refs.elevatorList[j]
+          if (direction === UP) {
+            if (elevator.minInQueue < min) {
+              min = elevator.minInQueue
+              dispatchedTo = j
+            }
+          } else {
+            if (elevator.maxInQueue > max) {
+              max = elevator.maxInQueue
+              dispatchedTo = j
+            }
+          }
+        }
+      }
+
+      return dispatchedTo
     }
   }
 }

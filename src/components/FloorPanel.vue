@@ -31,7 +31,7 @@
         </div>
 
         <div class="text-5xl sm:py-14 sm:px-5 font-mono font-extrabold px-4 py-6">
-          {{ currentFloor }}
+          {{ displayFloor() }}
         </div>
       </div>
     </div>
@@ -69,6 +69,13 @@ export default {
 
     downRequestHandled: function () {
       this.downLighten = false
+    },
+
+    displayFloor: function () {
+      if (("" + this.currentFloor).length === 1) {
+        return "0" + this.currentFloor
+      }
+      return "" + this.currentFloor
     }
   }
 }

@@ -19,7 +19,7 @@
           </span>
           </div>
           <div class="inline-block">
-            <p class="sm:h-8 font-mono sm:text-7xl text-white h-5 text-6xl"> {{ currentFloor }} </p>
+            <p class="sm:h-8 font-mono sm:text-7xl text-white h-5 text-6xl"> {{ displayFloor() }} </p>
           </div>
         </div>
 
@@ -120,6 +120,10 @@ export default {
       }
       if (min > this.floorNum) min = null
       return min
+    },
+
+    idle() {
+      return !(this.goingUp || this.goingDown)
     }
   },
 
@@ -186,11 +190,11 @@ export default {
       if (this.queue.length <= 0) {
         this.goingDown = false
         this.goingUp = false
-      } else if (this.currentFloor <= this.minInQueue) {
+      } else if (this.currentFloor < this.minInQueue) {
         console.log("Changing to go up!")
         this.goingDown = false
         this.goingUp = true
-      } else if (this.currentFloor >= this.maxInQueue) {
+      } else if (this.currentFloor > this.maxInQueue) {
         console.log("Changing to go down!")
         console.log(this.currentFloor, " ", this.maxInQueue)
         this.goingDown = true
@@ -212,7 +216,7 @@ export default {
     run: function () {
       var stopFlag = false
       let floor = this.currentFloor
-      if (this.goingUp || this.goingDown) {
+      if (!this.idle) {
         if (this.lighten[floor]) {
           this.$set(this.lighten, floor, false)
           this.removeTask(floor)
@@ -227,7 +231,6 @@ export default {
           }
           if (floor === this.maxInQueue && this.downRequest[floor]) {
             this.$set(this.downRequest, floor, false)
-            this.goingUp = false
             this.removeTask(floor)
             this.$emit("dealtDownRequest", this.currentFloor)
             stopFlag = true
@@ -241,7 +244,6 @@ export default {
           }
           if (floor === this.minInQueue && this.upRequest[floor]) {
             this.$set(this.upRequest, floor, false)
-            this.goingDown = false
             this.removeTask(floor)
             this.$emit("dealtUpRequest", this.currentFloor)
             stopFlag = true
@@ -254,6 +256,23 @@ export default {
           this.goOn()
         }
       } else {
+        if (this.upRequest[floor]) {
+          this.$set(this.upRequest, floor, false)
+          this.goingUp = true
+          this.removeTask(floor)
+          this.$emit("dealtUpRequest", this.currentFloor)
+          this.stopBy(floor)
+        } else if (this.downRequest[floor]) {
+          this.$set(this.downRequest, floor, false)
+          this.goingDown = true
+          this.removeTask(floor)
+          this.$emit("dealtDownRequest", this.currentFloor)
+          this.stopBy(floor)
+        } else if (this.lighten[floor]) {
+          this.$set(this.lighten, floor, false)
+          this.removeTask(floor)
+          this.stopBy(floor)
+        }
         this.goOn()
       }
     },
@@ -279,6 +298,13 @@ export default {
     emergencyCall: function (name) {
       alert(name + " emergency calls the console\nElevator is now stopping!")
       this.stopBy(this.currentFloor)
+    },
+
+    displayFloor: function () {
+      if (("" + this.currentFloor).length === 1) {
+        return "0" + this.currentFloor
+      }
+      return "" + this.currentFloor
     }
   }
 }
