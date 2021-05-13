@@ -47,7 +47,7 @@
           </div>
           <div></div>
           <div>
-            <button class="hover:shadow-lg">
+            <button class="hover:shadow-lg" id="emergency" @click="emergencyCall(elevName)">
               <svg class="h-7 rounded border-2 border-solid border-red-300 bg-red-400 hover:bg-red-800 w-8 "
                    viewBox="0 0 1024 1024"
                    xmlns="http://www.w3.org/2000/svg" width="200" height="200">
@@ -61,7 +61,7 @@
             </button>
           </div>
           <div>
-            <button>
+            <button class="hover:shadow-lg" id="call" @click="makeCall(elevName)">
               <svg class="h-7 rounded border-2 border-solid border-cyan-400 bg-pink-300 hover:bg-pink-500 w-8 "
                    viewBox="0 0 1025 1024"
                    xmlns="http://www.w3.org/2000/svg" width="200" height="200">
@@ -250,8 +250,15 @@ export default {
       } else {
         this.goOn()
       }
+    },
 
+    makeCall: function (name) {
+      alert(name+" calls to the console!")
+    },
 
+    emergencyCall: function (name) {
+      alert(name+" emergency calls the console\nElevator is now stopping!")
+      this.stopBy(this.currentFloor)
     }
   }
 }
