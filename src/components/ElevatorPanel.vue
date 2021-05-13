@@ -1,15 +1,15 @@
 <template>
   <div class="flex py-3">
-    <div class="relative sm:max-w-xl sm:mx-auto text-center">
-      <div class="relative px-4 bg-white shadow-lg sm:rounded-3xl sm:p-10">
-        <div class="inline-flex bg-green-800 pr-6 p-3 rounded-3xl">
-          <div class="sm:-mx-14 inline-block">
-          <span>
-          <svg class="h-7 sm:h-8" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
+    <div class="relative max-w-xl mx-auto text-center">
+      <div class="relative bg-white shadow-lg sm:rounded-3xl rounded-xl sm:p-10 p-2">
+        <div class="inline-flex bg-green-800 pr-6 sm:p-3 rounded-3xl p-2">
+          <div class="sm:-mx-14 -mx-14 inline-block">
+            <span>
+            <svg class="h-7 sm:h-8" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
               d="M0 1024 1316.571429 1024 658.285714 0 0 1024Z"
               :fill="goingUp ? '#fcd217' : '#cdcdcd'"
-          ></path></svg>
-          </span>
+            ></path></svg>
+            </span>
             <p class="h-2"></p>
             <span>
           <svg class="h-7 sm:h-8" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
@@ -19,7 +19,7 @@
           </span>
           </div>
           <div class="inline-block">
-            <p class="h-8 font-mono text-7xl text-white"> {{ currentFloor }} </p>
+            <p class="sm:h-8 font-mono sm:text-7xl text-white h-5 text-6xl"> {{ currentFloor }} </p>
           </div>
         </div>
 
@@ -33,7 +33,7 @@
                 @click="floorSelected(floorNum - i + 1)"
                 :class="{'bg-blue-400': lighten[floorNum - i + 1]}"
             >
-              {{ floorNum - i + 1 }}
+              {{ floorNum - i + 1}}
             </button>
           </div>
         </div>
@@ -174,9 +174,9 @@ export default {
         clearInterval(this.timer)
       }
       this.doorOpen = true
-      setTimeout( ( ) => {
+      setTimeout(() => {
         this.doorOpen = false
-        setTimeout( ( ) => {
+        setTimeout(() => {
           this.timer = setInterval(this.run, 1000)
         }, 2000)
       }, 3000)
@@ -186,11 +186,11 @@ export default {
       if (this.queue.length <= 0) {
         this.goingDown = false
         this.goingUp = false
-      } else if (this.currentFloor < this.minInQueue) {
+      } else if (this.currentFloor <= this.minInQueue) {
         console.log("Changing to go up!")
         this.goingDown = false
         this.goingUp = true
-      } else if (this.currentFloor > this.maxInQueue) {
+      } else if (this.currentFloor >= this.maxInQueue) {
         console.log("Changing to go down!")
         console.log(this.currentFloor, " ", this.maxInQueue)
         this.goingDown = true
@@ -222,22 +222,28 @@ export default {
           if (this.upRequest[floor]) {
             this.$set(this.upRequest, floor, false)
             this.removeTask(floor)
+            this.$emit("dealtUpRequest", this.currentFloor)
             stopFlag = true
           }
-          if (floor === this.queue.max && this.downRequest[floor]) {
+          if (floor === this.maxInQueue && this.downRequest[floor]) {
             this.$set(this.downRequest, floor, false)
+            this.goingUp = false
             this.removeTask(floor)
+            this.$emit("dealtDownRequest", this.currentFloor)
             stopFlag = true
           }
         } else if (this.goingDown) {
-          if (this.downRequest[floor]){
+          if (this.downRequest[floor]) {
             this.$set(this.downRequest, floor, false)
             this.removeTask(floor)
+            this.$emit("dealtDownRequest", this.currentFloor)
             stopFlag = true
           }
-          if (floor === this.queue.min && this.upRequest[floor]) {
+          if (floor === this.minInQueue && this.upRequest[floor]) {
             this.$set(this.upRequest, floor, false)
+            this.goingDown = false
             this.removeTask(floor)
+            this.$emit("dealtUpRequest", this.currentFloor)
             stopFlag = true
           }
         }
@@ -252,12 +258,26 @@ export default {
       }
     },
 
+    requestUp: function (floor) {
+      if (!this.upRequest[floor]) {
+        this.upRequest[floor] = true
+        this.queue.push(floor)
+      }
+    },
+
+    requestDown: function (floor) {
+      if (!this.downRequest[floor]) {
+        this.downRequest[floor] = true
+        this.queue.push(floor)
+      }
+    },
+
     makeCall: function (name) {
-      alert(name+" calls to the console!")
+      alert(name + " calls to the console!")
     },
 
     emergencyCall: function (name) {
-      alert(name+" emergency calls the console\nElevator is now stopping!")
+      alert(name + " emergency calls the console\nElevator is now stopping!")
       this.stopBy(this.currentFloor)
     }
   }

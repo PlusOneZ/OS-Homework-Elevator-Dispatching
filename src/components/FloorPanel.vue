@@ -5,7 +5,7 @@
       <div class="relative inline-flex shadow-lg sm:rounded-3xl rounded-xl bg-gradient-to-bl from-blue-300 to-blue-500  sm:p-5 p-2">
 
         <div>
-          <div class="p-1 sm:p-2">
+          <div class="p-1 sm:p-2" v-if="canUp">
             <button
                 class="border-solid border-4 rounded-lg border-gray-500 bg-white" :key="currentFloor +'button-up'"
                 @click="clickButton('up')"
@@ -17,7 +17,7 @@
             </button>
           </div>
 
-          <div class="p-1 sm:p-2">
+          <div class="p-1 sm:p-2" v-if="canDown">
             <button
                 class="border-solid border-4 rounded-lg border-gray-500 bg-white" :key="currentFloor +'button-down'"
                 @click="clickButton('down')"
@@ -42,7 +42,9 @@
 export default {
   name: "FloorPanel",
   props: {
-    currentFloor: Number
+    currentFloor: Number,
+    canUp: Boolean,
+    canDown: Boolean
   },
   data() {
     return {
@@ -54,9 +56,19 @@ export default {
     clickButton: function (type) {
       if (type === "up") {
         this.upLighten = true
+        this.$emit("upRequest", this.currentFloor)
       } else {
         this.downLighten = true
+        this.$emit("downRequest", this.currentFloor)
       }
+    },
+
+    upRequestHandled: function () {
+      this.upLighten = false
+    },
+
+    downRequestHandled: function () {
+      this.downLighten = false
     }
   }
 }
