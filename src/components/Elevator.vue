@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="min-h-screen bg-cyan-200">
     <p class="text-6xl font-sans py-4">
       In Elevator Panels
     </p>
@@ -9,9 +9,7 @@
           :key="'elev-'+ep"
           :floor-num="floorNum"
           :elev-name="'Elev' + ep"
-          :current-floor="1"
-          :going-down="false"
-          :going-up="false"
+          :lighten="[false]"
       ></ElevatorPanel>
     </div>
 
@@ -30,6 +28,7 @@
 </template>
 
 <script>
+import '@/assets/css/tailwind.css'
 import ElevatorPanel from "@/components/ElevatorPanel";
 import FloorPanel from "@/components/FloorPanel";
 
