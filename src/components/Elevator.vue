@@ -74,6 +74,32 @@ export default {
       this.$refs.floorPanels[floor-1].downRequestHandled()
     },
 
+  //   findElevatorToDeal: function (floor, direction) {
+  //     var score = [0, 0, 0, 0, 0]
+  //     console.log("haha",score)
+  //     for (let i in this.elevNum) {
+  //       let elevator = this.$refs.elevatorList[i]
+  //       score[i] = Math.abs(floor - elevator.currentFloor)
+  //       if (elevator.goingUp && direction === UP) {
+  //         score += 0
+  //       } else if (elevator.goingDown && direction === DOWN) {
+  //         score += 0
+  //       } else {
+  //         score += 10
+  //       }
+  //     }
+  //
+  //     var minIndex = 0
+  //     for (let j = 1; j < this.elevNum; j++) {
+  //       if (score[j] < score[minIndex]) minIndex = j
+  //     }
+  //
+  //     return minIndex
+  //   },
+  //
+  //   }
+  // }
+
     findElevatorToDeal: function (floor, direction) {
       var dispatchedTo = -1
       var distance = this.floorNum + 1
@@ -81,7 +107,8 @@ export default {
       for (var i = 0; i < this.elevNum; i++) {
         let elevator = this.$refs.elevatorList[i]
         if (direction === UP) {
-          if (elevator.goingUp || elevator.currentFloor < floor) {
+          if (elevator.goingUp && elevator.currentFloor <= floor) {
+            if (elevator.currentFloor === floor) return i
             if (elevator.maxInQueue > floor) {
               if (floor - elevator.currentFloor < inTrailDistance) {
                 inTrailDistance = floor - elevator.currentFloor
@@ -94,13 +121,9 @@ export default {
               }
             }
           }
-          if (dispatchedTo < 0) {
-            if (elevator.idle) {
-              dispatchedTo = i
-            }
-          }
         } else {
-          if (elevator.goingDown || elevator.currentFloor > floor) {
+          if (elevator.goingDown && elevator.currentFloor >= floor) {
+            if (elevator.currentFloor === floor) return i
             if (elevator.minInQueue < floor) {
               if (elevator.currentFloor - floor < inTrailDistance) {
                 inTrailDistance = elevator.currentFloor - floor
@@ -113,8 +136,19 @@ export default {
               }
             }
           }
-          if (dispatchedTo < 0) {
-            if (elevator.idle) {
+        }
+        if (dispatchedTo < 0) {
+          if (elevator.currentFloor === floor ) {
+            return i
+          }
+          console.log("电梯动不动", elevator.idle)
+          if (elevator.idle) {
+            console.log(Math.abs(floor - elevator.currentFloor))
+            console.log(floor, elevator.currentFloor)
+            console.log("距离", distance)
+            console.log("赋值", distance > Math.abs(floor - elevator.currentFloor))
+            if (distance > Math.abs(floor - elevator.currentFloor)) {
+              distance = Math.abs(floor - elevator.currentFloor)
               dispatchedTo = i
             }
           }
@@ -122,6 +156,7 @@ export default {
       }
 
       if (dispatchedTo < 0) {
+        console.log("NO ELEVATOR SELECTED!")
         var min = this.floorNum + 1
         var max = -1
         for (var j = 0; i < this.elevNum; j++) {
