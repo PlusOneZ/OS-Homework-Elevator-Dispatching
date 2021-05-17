@@ -84,7 +84,7 @@ npm run serve
 
 电梯内部按钮单个模块的 UI 如下：
 
-![Elevator Panel](img/elevator_panel.png)
+![elevator_panel.png](https://i.loli.net/2021/05/18/BFRfyJrTvDq4ePX.png)
 
 其中，每个数字按钮都可以点按，左下角显示电梯开关状态，右下角两个按钮分别是"报警"与"呼叫"，"报警"按钮会使该电梯停下。
 
@@ -94,7 +94,7 @@ npm run serve
 
 楼层内按钮单个模块的 UI 如下：
 
-![Floor Panel](img/floor_panel.png)
+![floor_panel.png](https://i.loli.net/2021/05/18/bNQ4pzoyAt1qlM6.png)
 
 上下按钮可以点按，会有明显的点亮（黄色）、熄灭（灰色）效果。底层的按钮只有"向上"，而顶层的按钮只有"向下"。
 
@@ -104,7 +104,7 @@ npm run serve
 
 电梯总体布局如下图所示：
 
-![Elevators View](img/elevator.png)
+![elevator.png](https://i.loli.net/2021/05/18/FV2DhRBuwbN7H1L.png)
 
 
 ## 难点分析
