@@ -58,4 +58,6 @@ npm run lint
 ## 逻辑架构
 
 在 [`ElevatorPanel.vue`](/src/components/ElevatorPanel.vue) 中实现了一个电梯内部按钮模块的 UI 以及一台电梯内部运作的逻辑代码。
+
 单个模块的 UI 如下：
+
