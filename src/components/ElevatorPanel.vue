@@ -1,30 +1,31 @@
 <template>
   <div class="flex py-3">
     <div class="relative max-w-xl mx-auto text-center">
-      <div class="relative bg-white shadow-lg sm:rounded-3xl rounded-xl sm:p-10 p-2">
+      <div class="relative bg-white shadow-lg sm:rounded-3xl rounded-xl sm:p-5 p-2">
         <div class="inline-flex bg-green-800 pr-6 sm:p-3 rounded-3xl p-2">
-          <div class="sm:-mx-14 -mx-14 inline-block">
+          <div class="sm:-mx-20 -mx-20 inline-block">
             <span>
-            <svg class="h-7 sm:h-8" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
+            <svg class="h-7 sm:h-7" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
               d="M0 1024 1316.571429 1024 658.285714 0 0 1024Z"
               :fill="goingUp ? '#fcd217' : '#cdcdcd'"
             ></path></svg>
             </span>
             <p class="h-2"></p>
             <span>
-          <svg class="h-7 sm:h-8" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
+          <svg class="h-7 sm:h-7" viewBox="0 0 1317 1024" xmlns="http://www.w3.org/2000/svg" width="200" height="200"><path
               d="M0 0 1316.571429 0 658.285714 1024 0 0Z"
               :fill="goingDown ? '#fcd217' : '#cdcdcd'"
           ></path></svg>
           </span>
           </div>
           <div class="inline-block">
-            <p class="sm:h-8 font-mono sm:text-7xl text-white h-5 text-6xl"> {{ displayFloor() }} </p>
+            <p class="sm:h-7 font-mono sm:text-6xl text-white h-5 text-5xl"> {{ displayFloor() }} </p>
           </div>
         </div>
 
         <div class="grid gap-4 grid-cols-4 pt-8">
           <div
+              class="w-10"
               v-for="i in floorNum"
               :key="i"
           >
@@ -39,14 +40,14 @@
         </div>
 
         <div class="grid gap-4 grid-cols-4 pt-5">
-          <div>
+          <div class="w-10">
             <p class="text-2xl font-sans font-bold"
                :class="{'text-red-400': !doorOpen, 'text-green-400': doorOpen}">
-              {{ doorOpen ? '开' : '关' }}
+              {{ doorOpen ? 'OPEN' : 'CLOSE' }}
             </p>
           </div>
-          <div></div>
-          <div>
+          <div class="w-10"></div>
+          <div class="w-10">
             <button class="hover:shadow-lg" id="emergency" @click="emergencyCall(elevName)">
               <svg class="h-7 rounded border-2 border-solid border-red-300 bg-red-400 hover:bg-red-800 w-8 "
                    viewBox="0 0 1024 1024"
@@ -60,7 +61,7 @@
               </svg>
             </button>
           </div>
-          <div>
+          <div class="w-10">
             <button class="hover:shadow-lg" id="call" @click="makeCall(elevName)">
               <svg class="h-7 rounded border-2 border-solid border-cyan-400 bg-pink-300 hover:bg-pink-500 w-8 "
                    viewBox="0 0 1025 1024"
@@ -105,20 +106,20 @@ export default {
 
   computed: {
     maxInQueue() {
+      if (this.queue.length <= 0) return undefined
       var max = -1;
       for (var i = 0; i < this.queue.length; i++) {
         if (this.queue[i] > max) max = this.queue[i];
       }
-      if (max <= 0) max = null
       return max
     },
 
     minInQueue() {
+      if (this.queue.length <= 0) return undefined
       var min = this.floorNum + 1
       for (var i = 0; i < this.queue.length; i++) {
         if (this.queue[i] < min) min = this.queue[i];
       }
-      if (min > this.floorNum) min = null
       return min
     },
 
@@ -164,7 +165,7 @@ export default {
     },
 
     removeTask: function (task) {
-      console.log("Arriving at: ", task)
+      // console.log("Arriving at: ", task)
       let i = this.queue.indexOf(task)
       if (i !== -1) {
         this.queue.splice(i, 1)
@@ -191,12 +192,12 @@ export default {
         this.goingDown = false
         this.goingUp = false
       } else if (this.currentFloor < this.minInQueue) {
-        console.log("Changing to go up!")
+        // console.log("Changing to go up!")
         this.goingDown = false
         this.goingUp = true
       } else if (this.currentFloor > this.maxInQueue) {
-        console.log("Changing to go down!")
-        console.log(this.currentFloor, " ", this.maxInQueue)
+        // console.log("Changing to go down!")
+        // console.log(this.currentFloor, " ", this.maxInQueue)
         this.goingDown = true
         this.goingUp = false
       }

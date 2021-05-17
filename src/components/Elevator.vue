@@ -50,6 +50,13 @@ export default {
     return {
       elevNum: 5,
       floorNum: 20,
+      choice: []
+    }
+  },
+
+  created() {
+    for (var i = 0; i < this.elevNum; i++) {
+      this.choice[i] = i
     }
   },
 
@@ -57,6 +64,7 @@ export default {
     floorUpRequest: function (floor) {
       let i = this.findElevatorToDeal(floor, UP)
       console.log("Requesting to ", i, " elevator")
+      console.log(this.$refs.elevatorList[i])
       this.$refs.elevatorList[i].requestUp(floor)
     },
 
@@ -101,11 +109,18 @@ export default {
   // }
 
     findElevatorToDeal: function (floor, direction) {
+      this.choice.sort(() => { return 0.5 - Math.random()})
       var dispatchedTo = -1
       var distance = this.floorNum + 1
       var inTrailDistance = this.floorNum + 1
-      for (var i = 0; i < this.elevNum; i++) {
+      for (var p = 0; p < this.elevNum; p++) {
+        let i = this.choice[p]
         let elevator = this.$refs.elevatorList[i]
+        if (elevator.idle || (direction===UP && elevator.goingUp) || (direction === DOWN && elevator.goingDown)) {
+          if (elevator.currentFloor === floor) {
+            return i
+          }
+        }
         if (direction === UP) {
           if (elevator.goingUp && elevator.currentFloor <= floor) {
             if (elevator.currentFloor === floor) return i
@@ -138,15 +153,12 @@ export default {
           }
         }
         if (dispatchedTo < 0) {
-          if (elevator.currentFloor === floor ) {
-            return i
-          }
-          console.log("电梯动不动", elevator.idle)
+          // console.log("电梯动不动", elevator.idle)
           if (elevator.idle) {
-            console.log(Math.abs(floor - elevator.currentFloor))
-            console.log(floor, elevator.currentFloor)
-            console.log("距离", distance)
-            console.log("赋值", distance > Math.abs(floor - elevator.currentFloor))
+            // console.log(Math.abs(floor - elevator.currentFloor))
+            // console.log(floor, elevator.currentFloor)
+            // console.log("距离", distance)
+            // console.log("赋值", distance > Math.abs(floor - elevator.currentFloor))
             if (distance > Math.abs(floor - elevator.currentFloor)) {
               distance = Math.abs(floor - elevator.currentFloor)
               dispatchedTo = i
@@ -159,17 +171,33 @@ export default {
         console.log("NO ELEVATOR SELECTED!")
         var min = this.floorNum + 1
         var max = -1
-        for (var j = 0; i < this.elevNum; j++) {
+        dispatchedTo = 0
+        for (var q = 0; q < this.elevNum; q++) {
+          let j = this.choice[q]
           let elevator = this.$refs.elevatorList[j]
           if (direction === UP) {
-            if (elevator.minInQueue < min) {
-              min = elevator.minInQueue
-              dispatchedTo = j
+            if (elevator.minInQueue !== undefined) {
+              if (elevator.minInQueue < min) {
+                min = elevator.minInQueue
+                dispatchedTo = j
+              }
+            } else {
+              if (elevator.currentFloor < min) {
+                min = elevator.currentFloor
+                dispatchedTo = j
+              }
             }
           } else {
-            if (elevator.maxInQueue > max) {
-              max = elevator.maxInQueue
-              dispatchedTo = j
+            if (elevator.maxInQueue !== undefined) {
+              if (elevator.maxInQueue > max) {
+                max = elevator.maxInQueue
+                dispatchedTo = j
+              }
+            } else {
+              if (elevator.currentFloor > max) {
+                max = elevator.currentFloor
+                dispatchedTo = j
+              }
             }
           }
         }
