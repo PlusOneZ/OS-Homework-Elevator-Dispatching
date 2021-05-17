@@ -8,7 +8,7 @@
           v-for="ep in this.elevNum"
           :key="'elev-'+ep"
           :floor-num="floorNum"
-          :elev-name="'Elevator ' + (ep + 1)"
+          :elev-name="'Elevator ' + ep"
           ref="elevatorList"
           @dealtDownRequest="floorDownRequestDealt"
           @dealtUpRequest="floorUpRequestDealt"
