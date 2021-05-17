@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-cyan-200">
+  <div class="min-h-screen">
     <p class="sm:text-6xl font-sans py-4 text-2xl">
       In Elevator Panels
     </p>
@@ -19,7 +19,7 @@
       Floor Panels
     </p>
 
-    <div class="sm:grid-cols-7 grid grid-cols-2">
+    <div class="sm:grid-cols-6 grid grid-cols-2">
       <FloorPanel
           v-for="fp in this.floorNum"
           :key="'floor-' + fp"

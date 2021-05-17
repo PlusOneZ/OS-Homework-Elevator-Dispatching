@@ -23,14 +23,14 @@
           </div>
         </div>
 
-        <div class="grid gap-4 grid-cols-4 pt-8">
+        <div class="grid gap-1 sm:gap-1 grid-cols-4 pt-8">
           <div
               class="w-10"
               v-for="i in floorNum"
               :key="i"
           >
             <button
-                class="rounded border-2 border-solid border-cyan-300 h-7 w-8"
+                class="rounded border-2 border-solid border-blue-300 h-7 w-8"
                 @click="floorSelected(floorNum - i + 1)"
                 :class="{'bg-blue-400': lighten[floorNum - i + 1]}"
             >
