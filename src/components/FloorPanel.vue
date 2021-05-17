@@ -1,6 +1,6 @@
 <template>
   <div class="py-1 flex flex-col justify-center sm:py-2">
-    <div class="relative py-3 sm:mx-auto mx-auto bg-cyan-200">
+    <div class="relative py-3 sm:mx-auto mx-auto">
 
       <div class="relative inline-flex shadow-lg sm:rounded-3xl rounded-xl bg-gradient-to-bl from-blue-300 to-blue-500 p-2">
         <div>

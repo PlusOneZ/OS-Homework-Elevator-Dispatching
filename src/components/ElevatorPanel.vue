@@ -1,7 +1,11 @@
 <template>
-  <div class="flex py-3">
+  <div class="py-3">
+    <div>
+      <p class="text-xl"> {{elevName}} </p>
+    </div>
+    <div class="flex">
     <div class="relative max-w-xl mx-auto text-center">
-      <div class="relative bg-white shadow-lg sm:rounded-3xl rounded-xl sm:p-5 p-2">
+      <div class="relative shadow-lg sm:rounded-2xl bg-pink-50 rounded-xl sm:p-5 p-2">
         <div class="inline-flex bg-green-800 pr-6 sm:p-3 rounded-3xl p-2">
           <div class="sm:-mx-20 -mx-20 inline-block">
             <span>
@@ -74,6 +78,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
