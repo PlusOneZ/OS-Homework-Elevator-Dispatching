@@ -12,6 +12,8 @@
           ref="elevatorList"
           @dealtDownRequest="floorDownRequestDealt"
           @dealtUpRequest="floorUpRequestDealt"
+          @upRequest="floorUpRequest"
+          @downRequest="floorDownRequest"
       ></ElevatorPanel>
     </div>
 
@@ -64,14 +66,17 @@ export default {
     floorUpRequest: function (floor) {
       let i = this.findElevatorToDeal(floor, UP)
       console.log("Requesting to ", i, " elevator")
-      console.log(this.$refs.elevatorList[i])
-      this.$refs.elevatorList[i].requestUp(floor)
+      if (i !== undefined) {
+        this.$refs.elevatorList[i].requestUp(floor)
+      }
     },
 
     floorDownRequest: function (floor) {
       let i = this.findElevatorToDeal(floor, DOWN)
       console.log("Requesting to ", i, " elevator")
-      this.$refs.elevatorList[i].requestDown(floor)
+      if (i !== undefined) {
+        this.$refs.elevatorList[i].requestDown(floor)
+      }
     },
 
     floorUpRequestDealt: function (floor) {
@@ -113,9 +118,15 @@ export default {
       var dispatchedTo = -1
       var distance = this.floorNum + 1
       var inTrailDistance = this.floorNum + 1
+      var available = undefined
       for (var p = 0; p < this.elevNum; p++) {
         let i = this.choice[p]
         let elevator = this.$refs.elevatorList[i]
+        if (!elevator.disabled) {
+          available = i
+        } else {
+          continue
+        }
         if (elevator.idle || (direction===UP && elevator.goingUp) || (direction === DOWN && elevator.goingDown)) {
           if (elevator.currentFloor === floor) {
             return i
@@ -167,14 +178,24 @@ export default {
         }
       }
 
+      if (available === undefined) {
+        if (direction === UP) {
+          this.$refs.floorPanels[floor-1].upRequestHandled()
+        } else {
+          this.$refs.floorPanels[floor-1].downRequestHandled()
+        }
+        return undefined
+      }
+
       if (dispatchedTo < 0) {
         console.log("NO ELEVATOR SELECTED!")
         var min = this.floorNum + 1
         var max = -1
-        dispatchedTo = 0
+        dispatchedTo = available
         for (var q = 0; q < this.elevNum; q++) {
           let j = this.choice[q]
           let elevator = this.$refs.elevatorList[j]
+          if (elevator.disabled) continue
           if (direction === UP) {
             if (elevator.minInQueue !== undefined) {
               if (elevator.minInQueue < min) {
