@@ -26,7 +26,9 @@ npm run build
 npm run lint
 ```
 
-# 电梯调度器
+
+
+# 电梯调度器文档
 
 ## 环境与运行
 
@@ -84,7 +86,7 @@ npm run serve
 
 电梯内部按钮单个模块的 UI 如下：
 
-![elevator_panel.png](https://i.loli.net/2021/05/18/BFRfyJrTvDq4ePX.png)
+<img src="https://i.loli.net/2021/05/18/BFRfyJrTvDq4ePX.png" alt="in elevator panel" width="25%">
 
 其中，每个数字按钮都可以点按，左下角显示电梯开关状态，右下角两个按钮分别是"报警"与"呼叫"，"报警"按钮会使该电梯停下。
 
@@ -94,7 +96,7 @@ npm run serve
 
 楼层内按钮单个模块的 UI 如下：
 
-![floor_panel.png](https://i.loli.net/2021/05/18/bNQ4pzoyAt1qlM6.png)
+<img src="https://i.loli.net/2021/05/18/bNQ4pzoyAt1qlM6.png" width="25%" alt="floor panel">
 
 上下按钮可以点按，会有明显的点亮（黄色）、熄灭（灰色）效果。底层的按钮只有"向上"，而顶层的按钮只有"向下"。
 
@@ -106,6 +108,11 @@ npm run serve
 
 ![elevator.png](https://i.loli.net/2021/05/18/FV2DhRBuwbN7H1L.png)
 
+## 使用指南
+
+* 通过电梯中的按钮（In Elevator Panel）表示在电梯内设置目标楼层。点击**呼叫**（底部右一）按钮表示呼叫总台功能，点击**报警**（底部右二）按钮来急停电梯并呼叫总台。
+* 通过楼层按钮（Floor Panel）来在楼层中呼叫电梯，接下来会有一台电梯在楼内打开门。
+* 报警功能使用后，该电梯会失效，再次点击报警按钮可以复原。
 
 ## 难点分析
 
@@ -125,3 +132,4 @@ npm run serve
 ## 不足之处
 * 调度的算法并不是最优解，有些不同于实际调度的反常费事情况。
 * 代码实现中有冗余，可以进一步优化。
+* 每次将楼层内的呼叫指派到某台电梯后并不会根据电梯的情况动态的修改，一定要等到指派的电梯停在该楼层。
